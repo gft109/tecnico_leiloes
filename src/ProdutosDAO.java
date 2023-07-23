@@ -14,6 +14,7 @@ import javax.swing.JOptionPane;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.List;
 
 
 public class ProdutosDAO {
@@ -46,12 +47,52 @@ public class ProdutosDAO {
         
         
     }
-    
+    /*
     public ArrayList<ProdutosDTO> listarProdutos(){
         
         return listagem;
     }
+    */
     
+    public List<ProdutosDTO> listarProdutos() {
+        // colocar a função assim, quando for por filtro: public List<ProdutosDTO> listagem(String filtro)
+        
+        conn = new conectaDAO().connectDB();
+        String sql = "select * from produtos";
+
+        /*
+        if (!filtro.isEmpty()) {
+            sql = sql + " where nome like ?";
+        }
+        */
+
+        try {
+            st = conn.prepareStatement(sql);
+            
+            /*
+            if (!filtro.isEmpty()) {
+                st.setString(1, "%" + filtro + "%");
+            }
+            */
+            
+            rs = st.executeQuery();
+            List<ProdutosDTO> lista = new ArrayList<>();
+
+            while (rs.next()) {
+                ProdutosDTO produtos = new ProdutosDTO();
+                produtos.setId(rs.getInt("id"));
+                produtos.setNome(rs.getString("nome"));
+                produtos.setValor(rs.getInt("valor"));
+                produtos.setStatus(rs.getString("status"));
+                lista.add(produtos);
+            }
+            return lista;
+        } catch (SQLException ex) {
+            System.out.println("Erro ao conectar: " + ex.getMessage());
+            return null;
+        }
+
+    }
     
     
         
